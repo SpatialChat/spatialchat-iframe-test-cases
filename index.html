@@ -1,94 +1,184 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      http-equiv="X-UA-Compatible"
+      content="IE=edge"
+    />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0"
+    />
     <title>Document</title>
     <style>
-        body {
-            display: flex;
-            flex-direction: column;
-        }
-        input {
-            width: 300px;
-        }
-        .row {
-            display: flex;
-        }
-        .column {
-            width: 50%;
-        }
+      body {
+        display: flex;
+        flex-direction: column;
+      }
+      input {
+        width: 300px;
+      }
+      .row {
+        display: flex;
+      }
+      .column {
+        width: 50%;
+      }
     </style>
-</head>
-    <body>
-        <h1>For testing iframe API</h1>
-        <h2>Supported requests/responses</h2>
-        <div class="api-elem">
-            <h3>Get Space Ids</h3>
-            <div class="row">
-                <div class="column">
-                    <h4>Request object</h4>
-                    <ul>
-                        <li>Field: "name" / Value: "get_space_ids"</li>
-                        <li>Field: "requestId" / Value: any unique string</li>
-                        <li>Field: "data" / Value: </li>
-                    </ul>
-                </div>
-                <div class="column">
-                    <h4>Response object</h4>
-                    <ul>
-                        <li>Field: "name" / Value: "space_ids"</li>
-                        <li>Field: "requestId" / Value: the same value as in request</li>
-                        <li>Field: "data" / Value: serialized object by JSON.stringify with fields: { spaceId: string, roomId: string, spaceSlug: string }</li>
-                    </ul>
-                </div>
-            </div>
-            <div>
-                <input id="get_space_ids_url" placeholder="Parent origin" value="https://app.dev.spa.specha.co/"></input>
-                <button id="get_space_ids_btn">Send request</button>
-                <p>Request: <span id="get_space_ids"></span></p>
-                <p>Response: <spa id="space_ids"></spa></p>
-            </div>
+  </head>
+  <body>
+    <h1>For testing iframe API</h1>
+
+    <h2>Parent origin</h2>
+
+    <input
+      id="origin_url"
+      placeholder="Parent origin"
+      value="https://app.dev.spa.specha.co/"
+    />
+
+    <h2>Supported requests/responses</h2>
+
+    <div class="api-elem">
+      <h3>get_space_ids</h3>
+
+      <div class="row">
+        <div class="column">
+          <h4>Request object</h4>
+
+          <ul>
+            <li>Field: "name" / Value: "get_space_ids"</li>
+
+            <li>Field: "requestId" / Value: any unique string</li>
+          </ul>
         </div>
-        <script>
-            window.addEventListener('message', (e) => {
-                const data = e.data;
-                const name = JSON.parse(data).name;
 
-                document.getElementById(name).innerText = data;
-            });
+        <div class="column">
+          <h4>Response object</h4>
 
+          <ul>
+            <li>Field: "name" / Value: "space_ids"</li>
 
-            function uuidv4() {
-                return ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c => (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16));
-            }
+            <li>Field: "requestId" / Value: the same value as in request</li>
 
-            function getSpaceIds() {
-                const input = get_space_ids_url;
-                const btn = get_space_ids_btn;
-                const request = get_space_ids;
+            <li>
+              Field: "data" / Value: serialized object by JSON.stringify with fields: { spaceId:
+              string, roomId: string, spaceSlug: string }
+            </li>
+          </ul>
+        </div>
 
-                const serializedRequest = JSON.stringify({name: "get_space_ids", requestId: uuidv4()});
+        <div>
+          <button id="get_space_ids_btn">Send request</button>
 
-                request.textContent = serializedRequest;
+          <p>Request: <span id="get_space_ids"></span></p>
 
-                window.parent.postMessage(serializedRequest, input.value);
+          <p>Response: <span id="space_ids"></span></p>
+        </div>
+      </div>
+    </div>
 
-                btn.addEventListener('click', () => {
-                    const serializedRequest = JSON.stringify({name: "get_space_ids", requestId: uuidv4()});
+    <div class="api-elem">
+      <h3>get_user_info</h3>
 
-                    request.textContent = serializedRequest;
+      <div class="row">
+        <div class="column">
+          <h4>Request object</h4>
 
-                    if(!input.value) {
-                        alert("Please, enter 'Parent origin' field", );
-                    } else {
-                        window.parent.postMessage(serializedRequest, input.value);
-                    }
-                })
-            }
+          <ul>
+            <li>Field: "name" / Value: "get_user_info"</li>
 
-            getSpaceIds()
-        </script>
-    </body>
+            <li>Field: "requestId" / Value: any unique string</li>
+          </ul>
+        </div>
+
+        <div class="column">
+          <h4>Response object</h4>
+
+          <ul>
+            <li>Field: "name" / Value: "user_info"</li>
+
+            <li>Field: "requestId" / Value: the same value as in request</li>
+
+            <li>
+              Field: "data" / Value: serialized object by JSON.stringify with fields: { name?:
+              string, about?: string, pronoun?: string, avatarUrl?: string }
+            </li>
+          </ul>
+        </div>
+
+        <div>
+          <button id="get_user_info_btn">Send request</button>
+
+          <p>Request: <span id="get_user_info"></span></p>
+
+          <p>Response: <span id="user_info"></span></p>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      window.addEventListener('message', (e) => {
+        try {
+          const data = e.data
+          const name = JSON.parse(data).name
+
+          document.getElementById(name).innerText = data
+        } catch (e) {
+          console.error('wrong message data format')
+          console.error(e)
+        }
+      })
+
+      function uuidv4() {
+        return ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, (c) =>
+          (c ^ (crypto.getRandomValues(new Uint8Array(1))[0] & (15 >> (c / 4)))).toString(16)
+        )
+      }
+
+      ;(function () {
+        const originUrlInput = origin_url
+        const sendGetSpaceIdsButton = get_space_ids_btn
+        const sendGetUserInfoButton = get_user_info_btn
+        let originUrl = originUrlInput.value
+
+        function sendRequest(requestData) {
+          if (!originUrl) {
+            alert('Fill Parent origin input')
+
+            return
+          }
+
+          window.parent.postMessage(requestData, originUrl)
+        }
+
+        originUrlInput.addEventListener('input', (event) => {
+          originUrl = event.target.value
+        })
+
+        sendGetSpaceIdsButton.addEventListener('click', () => {
+          const getSpaceIdsRequestInfoElement = get_space_ids
+          const serializedRequest = JSON.stringify({
+            name: 'get_space_ids',
+            requestId: uuidv4(),
+          })
+
+          getSpaceIdsRequestInfoElement.textContent = serializedRequest
+          sendRequest(serializedRequest)
+        })
+
+        sendGetUserInfoButton.addEventListener('click', () => {
+          const getUserInfoRequestInfoElement = get_user_info
+          const serializedRequest = JSON.stringify({
+            name: 'get_user_info',
+            requestId: uuidv4(),
+          })
+
+          getUserInfoRequestInfoElement.textContent = serializedRequest
+          sendRequest(serializedRequest)
+        })
+      })()
+    </script>
+  </body>
 </html>
